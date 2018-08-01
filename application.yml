@@ -41,7 +41,7 @@ shiny:
     display-name: Daizy-DB
     description: Modification de base de données de l'application Désignation Mobile
     docker-cmd: ["R", "-e", "shiny::runApp('/root/daizy-db')"]
-    docker-image: pobsteta/shiny-daizy-db
+    docker-image: pobsteta/daizy-db
     groups: [admingroup,users]
     docker-network: "host"
     
