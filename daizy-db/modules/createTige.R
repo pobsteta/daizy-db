@@ -22,7 +22,7 @@ createtigeUI <- function(id) {
             selectInput(ns("tableFDP"), "Choisir la FDP à modifier", choices = c('Choisir la FDP à modifier' = '')),
             box(title = "FDP sélectionnée", status = "primary", solidHeader = TRUE, width = 12, tableOutput(ns("currentfdp"))),
             box(title = "Lot(s) présent(s) dans la FDP sélectionnée - Cliquez sur le lot désiré", status = "primary", solidHeader = TRUE, width = 12, DT::dataTableOutput(ns("currentfdplot"))),
-            verbatimTextOutput(ns("x4")),
+            verbatimTextOutput(ns("curlot")),
         box(title = "Table Tige", solidHeader = TRUE, rHandsontableOutput(ns("restige")), width = 12, status = "success")
         )
     )
@@ -130,7 +130,7 @@ createtige <- function(input, output, session, pool, reqTable, reqColInTable) {
   },
   selection=list(mode="single"))
   
-  output$x4 = renderPrint({
+  output$curlot = renderPrint({
     s <- input$currentfdplot_rows_selected
     clot <<- currentfdplot[s, 1] 
     if (length(s)) {
