@@ -13,7 +13,6 @@ createtigeUI <- function(id) {
             selectInput(ns("qualb"), "Choisir les qualités bois à créer", multiple = TRUE, choices = c('Choisir les qualités bois' = '')),
             actionButton(ns("createtige"), "1-Création des tiges", icon("refresh"), class = "btn btn-primary"),
             actionButton(ns("sauvetige"), "2-Sauvegarde des tiges", icon("refresh"), class = "btn btn-primary"),
-            # actionButton(ns("sauvebdd"), "3-Enregistrement de la base de données modifiée", icon("refresh"), class = "btn btn-primary"),
             downloadButton(ns("sauvebdd"), "3-Enregistrement de la base de données modifiée", class = "btn btn-primary")
         )
     ),
@@ -22,7 +21,6 @@ createtigeUI <- function(id) {
         box(title = "FDP", width = 12, solidHeader = TRUE, status = "info",
             selectInput(ns("tableFDP"), "Choisir la FDP à modifier", choices = c('Choisir la FDP à modifier' = '')),
             box(title = "FDP sélectionnée", status = "primary", solidHeader = TRUE, width = 12, tableOutput(ns("currentfdp"))),
-            # box(title = "Lot(s) présent(s) dans la FDP sélectionnée", status = "primary", solidHeader = TRUE, width = 12, tableOutput(ns("currentfdplot"))),
             box(title = "Lot(s) présent(s) dans la FDP sélectionnée - Cliquez sur le lot désiré", status = "primary", solidHeader = TRUE, width = 12, DT::dataTableOutput(ns("currentfdplot"))),
             verbatimTextOutput(ns("x4")),
         box(title = "Table Tige", solidHeader = TRUE, rHandsontableOutput(ns("restige")), width = 12, status = "success")
@@ -60,7 +58,6 @@ createtige <- function(input, output, session, pool, reqTable, reqColInTable) {
   })
   
   observeEvent(input$createtige, {
-    print(paste("curretnlot: ", input$currentfdplot_rows_selected))
     if (input$tableFDP == '') {showModal(
       modalDialog(
         title = "!!! CREATION DES TIGES IMPOSSIBLE !!!",
@@ -133,7 +130,6 @@ createtige <- function(input, output, session, pool, reqTable, reqColInTable) {
   },
   selection=list(mode="single"))
   
-  # print the selected indices
   output$x4 = renderPrint({
     s <- input$currentfdplot_rows_selected
     clot <<- currentfdplot[s, 1] 
