@@ -1,7 +1,7 @@
 createtigeUI <- function(id) {
   ns <- NS(id)
   tagList(
-    box(title = "", width = 6, status = "primary",
+    box(title = "", width = 5, status = "primary",
         valueBoxOutput("NomDB3"),
         box(title = "Critères de création des tiges", width = 12, solidHeader = TRUE, status = "info",
             numericInput(ns("nbtige"), "Nombre de tiges à créer :", 10, min = 1, max = 1000000),
@@ -12,17 +12,19 @@ createtigeUI <- function(id) {
             selectInput(ns("quala"), "Choisir les qualités arbre à créer", multiple = TRUE, choices = c('Choisir les qualités arbre' = '')),
             selectInput(ns("qualb"), "Choisir les qualités bois à créer", multiple = TRUE, choices = c('Choisir les qualités bois' = '')),
             actionButton(ns("createtige"), "1-Création des tiges", icon("refresh"), class = "btn btn-primary"),
-            actionButton(ns("sauvetige"), "2-Sauvegarde des tiges dans la base de données", icon("refresh"), class = "btn btn-primary"),
+            actionButton(ns("sauvetige"), "2-Sauvegarde des tiges", icon("refresh"), class = "btn btn-primary"),
             # actionButton(ns("sauvebdd"), "3-Enregistrement de la base de données modifiée", icon("refresh"), class = "btn btn-primary"),
             downloadButton(ns("sauvebdd"), "3-Enregistrement de la base de données modifiée", class = "btn btn-primary")
         )
     ),
     busyIndicator(),
-    box(title = "", width = 6, status = "success",
+    box(title = "", width = 7, status = "success",
         box(title = "FDP", width = 12, solidHeader = TRUE, status = "info",
             selectInput(ns("tableFDP"), "Choisir la FDP à modifier", choices = c('Choisir la FDP à modifier' = '')),
             box(title = "FDP sélectionnée", status = "primary", solidHeader = TRUE, width = 12, tableOutput(ns("currentfdp"))),
-            box(title = "Lot(s) présent(s) dans la FDP sélectionnée", status = "primary", solidHeader = TRUE, width = 12, tableOutput(ns("currentfdplot"))),
+            # box(title = "Lot(s) présent(s) dans la FDP sélectionnée", status = "primary", solidHeader = TRUE, width = 12, tableOutput(ns("currentfdplot"))),
+            box(title = "Lot(s) présent(s) dans la FDP sélectionnée - Cliquez sur le lot désiré", status = "primary", solidHeader = TRUE, width = 12, DT::dataTableOutput(ns("currentfdplot"))),
+            verbatimTextOutput(ns("x4")),
         box(title = "Table Tige", solidHeader = TRUE, rHandsontableOutput(ns("restige")), width = 12, status = "success")
         )
     )
@@ -69,7 +71,7 @@ createtige <- function(input, output, session, pool, reqTable, reqColInTable) {
   resulttige <- eventReactive(input$createtige, {
     res <- data_frame(
       IdTige=seq(1:input$nbtige),
-      IdLot=as.integer(1),
+      IdLot=clot,
       IdPlacette=as.integer(1),
       ModeCompteur=as.integer(0),
       StatutDistribution=as.integer(0),
@@ -112,18 +114,27 @@ createtige <- function(input, output, session, pool, reqTable, reqColInTable) {
     currentfdp <<- as_data_frame(res)
     res
   })
-  
-  output$currentfdplot <- renderTable({
+
+  output$currentfdplot <- DT::renderDataTable({
     idfiche <- pool %>% tbl("Fiche") %>% dplyr::filter(IdNatEA == input$tableFDP) %>% select(IdFiche) %>% pull()
     if (length(idfiche) >= 1) {
       res <- pool %>% tbl("Lot") %>% 
         dplyr::filter(IdFiche == idfiche) %>% select(IdLot, IdLotEA, IdFiche, Ordre, Nom, StatutLot, Surface, PlacetteRef, SurfacePlacette)
-      currentfdplot <<- as_data_frame(res)
-      res
+      currentfdplot <<- as.data.frame(res)
     } else {
       NULL
     }
-    
+  },
+  selection=list(mode="single"))
+  
+  # print the selected indices
+  output$x4 = renderPrint({
+    s <- input$currentfdplot_rows_selected
+    clot <<- currentfdplot[s, 1] 
+    if (length(s)) {
+      cat('Vous avez sélectionné le lot d\'idLot: ')
+      cat(clot, sep = ', ')
+    }
   })
   
   observeEvent(input$sauvetige, {
