@@ -147,7 +147,6 @@ createtige <- function(input, output, session, pool, reqTable, reqColInTable) {
       # liste les valeurs affectees à chaque attribut dans le dataframe res et les affecte les nouvelles valeurs
       entryValues <- data.frame(stringsAsFactors = FALSE, lapply(fields, type.convert))
       for (i in 1:input$nbtige) {
-        print(paste("insertion de: ", i))
         for (name in names(entryValues)) {
           entryValues[name] <- resulttige()[i, name]
         }
