@@ -60,12 +60,18 @@ createtige <- function(input, output, session, pool, reqTable, reqColInTable) {
   })
   
   observeEvent(input$createtige, {
+    print(paste("curretnlot: ", input$currentfdplot_rows_selected))
     if (input$tableFDP == '') {showModal(
       modalDialog(
         title = "!!! CREATION DES TIGES IMPOSSIBLE !!!",
         "Aucune FDP n'a été sélectionnée ! Choisissez une FDP dans la liste déroulante." ,
         footer = modalButton("OK")
-    ))}
+    ))} else if (is.null(input$currentfdplot_rows_selected)) {showModal(
+      modalDialog(
+        title = "!!! CREATION DES TIGES IMPOSSIBLE !!!",
+        "Aucun Lot n'a été sélectionné ! Choisissez un Lot dans la liste des lots." ,
+        footer = modalButton("OK")
+      ))}
   })
   
   resulttige <- eventReactive(input$createtige, {
