@@ -85,8 +85,8 @@ createtige <- function(input, output, session, pool, reqTable, reqColInTable) {
       IdNatModeMarquage='MM0001A' ,
       IdNatPredestinationHouppier='DE0121Q',
       IdNatPredestinationMenuBois='DE0121Q',
-      IdNatUG=dfea %>% filter(IdNatEA %in% input$tableFDP) %>% select(IdNatUG) %>% pull(),
-      IdNatParcelle=dfea %>% filter(IdNatEA %in% input$tableFDP) %>% select(IdNatParcelle) %>% pull(),
+      IdNatUG=sample(dfea %>% filter(IdNatEA %in% input$tableFDP) %>% select(IdNatUG) %>% pull(), input$nbtige, rep=TRUE),
+      IdNatParcelle=sample(dfea %>% filter(IdNatEA %in% input$tableFDP) %>% select(IdNatParcelle) %>% pull(), input$nbtige, rep=TRUE),
       Reserve=as.logical(0),
       Biologique=as.logical(0),
       IdNatReserveBio='',
@@ -133,7 +133,8 @@ createtige <- function(input, output, session, pool, reqTable, reqColInTable) {
       fields <- fields[2:length(fields)]
       # liste les valeurs affectees à chaque attribut dans le dataframe res et les affecte les nouvelles valeurs
       entryValues <- data.frame(stringsAsFactors = FALSE, lapply(fields, type.convert))
-      for (i in 1:length(resulttige())) {
+      for (i in 1:input$nbtige) {
+        print(paste("insertion de: ", i))
         for (name in names(entryValues)) {
           entryValues[name] <- resulttige()[i, name]
         }
