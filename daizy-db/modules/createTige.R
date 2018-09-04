@@ -75,7 +75,7 @@ createtige <- function(input, output, session, pool, reqTable, reqColInTable) {
     res <- data_frame(
       IdTige=seq(1:input$nbtige),
       IdLot=clot,
-      IdPlacette=as.integer(1),
+      IdPlacette=as.integer(0),
       ModeCompteur=as.integer(0),
       StatutDistribution=as.integer(0),
       IdNatEssence=sample(dfess %>% filter(LibelleCourt %in% input$essences) %>% select(IdNatEss) %>% pull(), input$nbtige, rep=TRUE),
